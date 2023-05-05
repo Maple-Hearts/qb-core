@@ -244,6 +244,7 @@ QBCore.Commands.Add('setgang', Lang:t("command.setgang.help"), { { name = Lang:t
 end, 'admin')
 
 -- Out of Character Chat
+
 QBCore.Commands.Add('ooc', Lang:t("command.ooc.help"), {}, false, function(source, args)
     local message = table.concat(args, ' ')
     local Players = QBCore.Functions.GetPlayers()
@@ -252,22 +253,22 @@ QBCore.Commands.Add('ooc', Lang:t("command.ooc.help"), {}, false, function(sourc
     for _, v in pairs(Players) do
         if v == source then
             TriggerClientEvent('chat:addMessage', v, {
-                color = QBConfig.Commands.OOCColor,
+                color = { 0, 0, 255},
                 multiline = true,
                 args = {'OOC | '.. GetPlayerName(source), message}
             })
         elseif #(playerCoords - GetEntityCoords(GetPlayerPed(v))) < 20.0 then
             TriggerClientEvent('chat:addMessage', v, {
-                color = QBConfig.Commands.OOCColor,
+                color = { 0, 0, 255},
                 multiline = true,
                 args = {'OOC | '.. GetPlayerName(source), message}
             })
         elseif QBCore.Functions.HasPermission(v, 'admin') then
             if QBCore.Functions.IsOptin(v) then
                 TriggerClientEvent('chat:addMessage', v, {
-                    color = QBConfig.Commands.OOCColor,
+                    color = { 0, 0, 255},
                     multiline = true,
-                    args = {'Proximity OOC | '.. GetPlayerName(source), message}
+                    args = {'Proxmity OOC | '.. GetPlayerName(source), message}
                 })
                 TriggerEvent('qb-log:server:CreateLog', 'ooc', 'OOC', 'white', '**' .. GetPlayerName(source) .. '** (CitizenID: ' .. Player.PlayerData.citizenid .. ' | ID: ' .. source .. ') **Message:** ' .. message, false)
             end
