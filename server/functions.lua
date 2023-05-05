@@ -232,7 +232,7 @@ function PaycheckInterval()
     SetTimeout(QBCore.Config.Money.PayCheckTimeOut * (60 * 1000), PaycheckInterval)
 end
 
--- Convert Cash To Itemized Cash
+-- Convert Cash To Itemized Cash 
 
 Citizen.CreateThread(function()
 	Wait(10000)
@@ -255,7 +255,7 @@ Citizen.CreateThread(function()
 	end)
 end)
 
--- Callback Functions --
+-- Callback Functions -- 
 
 -- Client Callback
 function QBCore.Functions.TriggerClientCallback(name, source, cb, ...)
