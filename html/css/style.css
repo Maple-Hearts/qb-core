@@ -27,6 +27,14 @@ html::-webkit-scrollbar {
         font-size: 1.5vh;
     }
 
+    .warning {
+        background-color: rgba(23, 23, 23, 90%);
+        border-radius: 10px;
+        box-shadow: 0rem 0rem 0.1rem 0.05rem #000000;
+        border-left: 5px solid #ecd500;
+        font-size: 1.5vh;
+    }
+
     .police {
         background-color: rgba(23, 23, 23, 90%);
         border-radius: 10px;
@@ -65,6 +73,14 @@ html::-webkit-scrollbar {
     box-shadow: 0rem 0rem 0.1rem 0.05rem #000000;
     border-left: 5px solid #c10114;
 }
+
+.warning {
+    background-color: rgba(23, 23, 23, 90%);
+    border-radius: 10px;
+    box-shadow: 0rem 0rem 0.1rem 0.05rem #000000;
+    border-left: 5px solid #ecd500;
+}
+
 
 .police {
     background-color: rgba(23, 23, 23, 90%);
