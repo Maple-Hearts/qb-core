@@ -90,6 +90,7 @@ function QBCore.Player.CheckPlayerData(source, PlayerData)
     PlayerData.metadata['hunger'] = PlayerData.metadata['hunger'] or 100
     PlayerData.metadata['thirst'] = PlayerData.metadata['thirst'] or 100
     PlayerData.metadata['stress'] = PlayerData.metadata['stress'] or 0
+    PlayerData.metadata['isadult'] = PlayerData.metadata['isadult'] or false
     PlayerData.metadata['isdead'] = PlayerData.metadata['isdead'] or false
     PlayerData.metadata['inlaststand'] = PlayerData.metadata['inlaststand'] or false
     PlayerData.metadata['armor'] = PlayerData.metadata['armor'] or 0
@@ -250,6 +251,11 @@ function QBCore.Player.CreatePlayer(PlayerData, Offline)
         end
 
         return true
+    end
+
+    function self.Functions.SetAdult(isAdult)
+        self.PlayerData.metadata.isadult = not not isadult -- Make sure the value is a boolean if nil is sent
+        self.Functions.UpdatePlayerData()
     end
 
     function self.Functions.SetJobDuty(onDuty)
