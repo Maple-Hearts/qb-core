@@ -229,142 +229,105 @@ function QBCore.Functions.GetPeds(ignoreList)
     return peds
 end
 
-function QBCore.Functions.GetClosestPed(coords, ignoreList)
-    local ped = PlayerPedId()
-    if coords then
-        coords = type(coords) == 'table' and vec3(coords.x, coords.y, coords.z) or coords
-    else
-        coords = GetEntityCoords(ped)
+---@param coords vector3? if unset uses player coords
+---@param objs number[]
+---@return integer closestObj or -1
+---@return number closestDistance or -1
+local function getClosest(coords, objs)
+    coords = type(coords) == 'table' and vec3(coords.x, coords.y, coords.z) or coords or GetEntityCoords(cache.ped)
+    local closestDistance = -1
+    local closestObj = -1
+    for i = 1, #objs do
+        local obj = objs[i]
+        local objCoords = GetEntityCoords(obj)
+        local distance = #(objCoords - coords)
+        if closestDistance == -1 or closestDistance > distance then
+            closestObj = obj
+            closestDistance = distance
+        end
     end
+    return closestObj, closestDistance
+end
+
+---Use QBCore.Functions.GetClosestPlayer if wanting to ignore non-player peds
+---@param coords? vector3 uses player position if not set
+---@param ignoreList number[]
+---@return number closestPed
+---@return number closestDistance
+function QBCore.Functions.GetClosestPed(coords, ignoreList)
     ignoreList = ignoreList or {}
     local peds = QBCore.Functions.GetPeds(ignoreList)
-    local closestDistance = -1
-    local closestPed = -1
-    for i = 1, #peds, 1 do
-        local pedCoords = GetEntityCoords(peds[i])
-        local distance = #(pedCoords - coords)
-
-        if closestDistance == -1 or closestDistance > distance then
-            closestPed = peds[i]
-            closestDistance = distance
-        end
-    end
-    return closestPed, closestDistance
+    return getClosest(coords, peds)
 end
 
+---@return boolean
 function QBCore.Functions.IsWearingGloves()
-    local ped = PlayerPedId()
-    local armIndex = GetPedDrawableVariation(ped, 3)
-    local model = GetEntityModel(ped)
-    if model == `mp_m_freemode_01` then
-        if QBCore.Shared.MaleNoGloves[armIndex] then
-            return false
-        end
-    else
-        if QBCore.Shared.FemaleNoGloves[armIndex] then
-            return false
-        end
-    end
-    return true
+    local armIndex = GetPedDrawableVariation(cache.ped, 3)
+    local model = GetEntityModel(cache.ped)
+    local sharedTable = model == `mp_m_freemode_01` and 'MaleNoGloves' or 'FemaleNoGloves'
+    return not QBCore.Shared[sharedTable][armIndex]
 end
 
+---@param coords? vector3 uses player position if not set
+---@return number? playerId
+---@return integer? closestDistance
 function QBCore.Functions.GetClosestPlayer(coords)
-    local ped = PlayerPedId()
-    if coords then
-        coords = type(coords) == 'table' and vec3(coords.x, coords.y, coords.z) or coords
-    else
-        coords = GetEntityCoords(ped)
-    end
-    local closestPlayers = QBCore.Functions.GetPlayersFromCoords(coords)
-    local closestDistance = -1
-    local closestPlayer = -1
-    for i = 1, #closestPlayers, 1 do
-        if closestPlayers[i] ~= PlayerId() and closestPlayers[i] ~= -1 then
-            local pos = GetEntityCoords(GetPlayerPed(closestPlayers[i]))
-            local distance = #(pos - coords)
-
-            if closestDistance == -1 or closestDistance > distance then
-                closestPlayer = closestPlayers[i]
-                closestDistance = distance
-            end
-        end
-    end
-    return closestPlayer, closestDistance
+    coords = type(coords) == 'table' and vec3(coords.x, coords.y, coords.z) or coords or GetEntityCoords(cache.ped)
+    local playerId, _, playerCoords = lib.getClosestPlayer(coords, 50, false)
+    local closestDistance = playerCoords and #(playerCoords - coords) or nil
+    return playerId, closestDistance
 end
 
+---@param coords? vector3 uses player position if not set
+---@param distance number
+---@return number[] playerIds
 function QBCore.Functions.GetPlayersFromCoords(coords, distance)
-    local players = GetActivePlayers()
-    local ped = PlayerPedId()
-    if coords then
-        coords = type(coords) == 'table' and vec3(coords.x, coords.y, coords.z) or coords
-    else
-        coords = GetEntityCoords(ped)
+    coords = type(coords) == 'table' and vec3(coords.x, coords.y, coords.z) or coords or GetEntityCoords(cache.ped)
+    local players = lib.getNearbyPlayers(coords, distance or 5, true)
+
+    -- This is for backwards compatability as beforehand it only returned the PlayerId, where Lib returns PlayerPed, PlayerId and PlayerCoords
+    for i = 1, #players do
+        players[i] = players[i].id
     end
-    distance = distance or 5
-    local closePlayers = {}
-    for _, player in pairs(players) do
-        local target = GetPlayerPed(player)
-        local targetCoords = GetEntityCoords(target)
-        local targetdistance = #(targetCoords - coords)
-        if targetdistance <= distance then
-            closePlayers[#closePlayers + 1] = player
-        end
-    end
-    return closePlayers
+
+    return players
 end
 
+---@param coords? vector3 uses player position if not set
+---@return number? vehicle
+---@return integer? closestDistance
 function QBCore.Functions.GetClosestVehicle(coords)
-    local ped = PlayerPedId()
-    local vehicles = GetGamePool('CVehicle')
-    local closestDistance = -1
-    local closestVehicle = -1
-    if coords then
-        coords = type(coords) == 'table' and vec3(coords.x, coords.y, coords.z) or coords
-    else
-        coords = GetEntityCoords(ped)
-    end
-    for i = 1, #vehicles, 1 do
-        local vehicleCoords = GetEntityCoords(vehicles[i])
-        local distance = #(vehicleCoords - coords)
-
-        if closestDistance == -1 or closestDistance > distance then
-            closestVehicle = vehicles[i]
-            closestDistance = distance
-        end
-    end
-    return closestVehicle, closestDistance
+    coords = type(coords) == 'table' and vec3(coords.x, coords.y, coords.z) or coords or GetEntityCoords(cache.ped)
+    local vehicle, vehicleCoords = lib.getClosestVehicle(coords, 50, true)
+    local closestDistance = vehicleCoords and #(vehicleCoords - coords) or nil
+    return vehicle, closestDistance
 end
 
+---@param coords? vector3 uses player position if not set
+---@return integer closestObject
+---@return number closestDistance
 function QBCore.Functions.GetClosestObject(coords)
-    local ped = PlayerPedId()
     local objects = GetGamePool('CObject')
-    local closestDistance = -1
-    local closestObject = -1
-    if coords then
-        coords = type(coords) == 'table' and vec3(coords.x, coords.y, coords.z) or coords
-    else
-        coords = GetEntityCoords(ped)
-    end
-    for i = 1, #objects, 1 do
-        local objectCoords = GetEntityCoords(objects[i])
-        local distance = #(objectCoords - coords)
-        if closestDistance == -1 or closestDistance > distance then
-            closestObject = objects[i]
-            closestDistance = distance
-        end
-    end
-    return closestObject, closestDistance
+    return getClosest(coords, objects)
 end
 
+---@param entity number
+---@param list table|{id: number}[] bones
+---@return table|{id: number, type: string, name: string}
+---@return vector3 boneCoords
+---@return number boneDistance
 function QBCore.Functions.GetClosestBone(entity, list)
-    local playerCoords, bone, coords, distance = GetEntityCoords(PlayerPedId())
+    local playerCoords = GetEntityCoords(cache.ped)
+
+    ---@type table, vector3, number
+    local bone, coords, distance
     for _, element in pairs(list) do
         local boneCoords = GetWorldPositionOfEntityBone(entity, element.id or element)
         local boneDistance = #(playerCoords - boneCoords)
-        if not coords then
-            bone, coords, distance = element, boneCoords, boneDistance
-        elseif distance > boneDistance then
-            bone, coords, distance = element, boneCoords, boneDistance
+        if not coords or distance > boneDistance then
+            bone = element
+            coords = boneCoords
+            distance = boneDistance
         end
     end
     if not bone then
@@ -375,39 +338,52 @@ function QBCore.Functions.GetClosestBone(entity, list)
     return bone, coords, distance
 end
 
+---@param entity number
+---@param boneType integer
+---@param boneIndex number
+---@return number distance
 function QBCore.Functions.GetBoneDistance(entity, boneType, boneIndex)
-    local bone
-    if boneType == 1 then
-        bone = GetPedBoneIndex(entity, boneIndex)
-    else
-        bone = GetEntityBoneIndexByName(entity, boneIndex)
-    end
+    local bone = boneType == 1 and GetPedBoneIndex(entity, boneIndex) or GetEntityBoneIndexByName(entity, boneIndex)
     local boneCoords = GetWorldPositionOfEntityBone(entity, bone)
-    local playerCoords = GetEntityCoords(PlayerPedId())
+    local playerCoords = GetEntityCoords(cache.ped)
     return #(boneCoords - playerCoords)
 end
 
+---@param ped number
+---@param model number|string
+---@param boneId number
+---@param x number
+---@param y number
+---@param z number
+---@param xR number
+---@param yR number
+---@param zR number
+---@param vertex boolean
+---@return number prop
 function QBCore.Functions.AttachProp(ped, model, boneId, x, y, z, xR, yR, zR, vertex)
-    local modelHash = type(model) == 'string' and GetHashKey(model) or model
+    local modelHash = type(model) == 'string' and joaat(model) or model
     local bone = GetPedBoneIndex(ped, boneId)
     QBCore.Functions.LoadModel(modelHash)
-    local prop = CreateObject(modelHash, 1.0, 1.0, 1.0, 1, 1, 0)
-    AttachEntityToEntity(prop, ped, bone, x, y, z, xR, yR, zR, 1, 1, 0, 1, not vertex and 2 or 0, 1)
+    local prop = CreateObject(modelHash, 1.0, 1.0, 1.0, true, true, false)
+    AttachEntityToEntity(prop, ped, bone, x, y, z, xR, yR, zR, true, true, false, true, not vertex and 2 or 0, true)
     SetModelAsNoLongerNeeded(modelHash)
     return prop
 end
 
 -- Vehicle
 
+---@deprecated call server function QBCore.Functions.CreateVehicle instead.
+---@param model string|number
+---@param cb? fun(vehicle: number)
+---@param coords? vector3 player position if not specified
+---@param isnetworked? boolean defaults to true
+---@param teleportInto boolean teleport player to driver seat if true
 function QBCore.Functions.SpawnVehicle(model, cb, coords, isnetworked, teleportInto)
-    local ped = PlayerPedId()
-    model = type(model) == 'string' and GetHashKey(model) or model
+    print(string.format("%s invoked deprecated client function QBCore.Functions.SpawnVehicle. call server function QBCore.Functions.CreateVehicle instead.", GetInvokingResource()))
+    coords = type(coords) == 'table' and vec3(coords.x, coords.y, coords.z) or coords or GetEntityCoords(cache.ped)
+    model = type(model) == 'string' and joaat(model) or model
     if not IsModelInCdimage(model) then return end
-    if coords then
-        coords = type(coords) == 'table' and vec3(coords.x, coords.y, coords.z) or coords
-    else
-        coords = GetEntityCoords(ped)
-    end
+
     isnetworked = isnetworked == nil or isnetworked
     QBCore.Functions.LoadModel(model)
     local veh = CreateVehicle(model, coords.x, coords.y, coords.z, coords.w, isnetworked, false)
@@ -418,42 +394,48 @@ function QBCore.Functions.SpawnVehicle(model, cb, coords, isnetworked, teleportI
     SetVehRadioStation(veh, 'OFF')
     SetVehicleFuelLevel(veh, 100.0)
     SetModelAsNoLongerNeeded(model)
-    if teleportInto then TaskWarpPedIntoVehicle(PlayerPedId(), veh, -1) end
+    if teleportInto then TaskWarpPedIntoVehicle(cache.ped, veh, -1) end
     if cb then cb(veh) end
 end
 
+---@param vehicle number
+---@return boolean failure if true, vehicle was not deleted
 function QBCore.Functions.DeleteVehicle(vehicle)
     SetEntityAsMissionEntity(vehicle, true, true)
     DeleteVehicle(vehicle)
+    return DoesEntityExist(vehicle)
 end
 
+---@param vehicle number
+---@return string?
 function QBCore.Functions.GetPlate(vehicle)
-    if vehicle == 0 then return end
+    if not vehicle or vehicle == 0 then return end
     return QBCore.Shared.Trim(GetVehicleNumberPlateText(vehicle))
 end
 
+---@param vehicle number
+---@return string?
 function QBCore.Functions.GetVehicleLabel(vehicle)
-    if vehicle == nil or vehicle == 0 then return end
+    if not vehicle or vehicle == 0 then return end
     return GetLabelText(GetDisplayNameFromVehicleModel(GetEntityModel(vehicle)))
 end
 
+---Find if vehicle exists within radius of coords.
+---@param coords vector3? defaults to player position
+---@param radius number
+---@return boolean isCloseVehicle if there is a vehicle within radius of coords
 function QBCore.Functions.SpawnClear(coords, radius)
-    if coords then
-        coords = type(coords) == 'table' and vec3(coords.x, coords.y, coords.z) or coords
-    else
-        coords = GetEntityCoords(PlayerPedId())
-    end
+    coords = type(coords) == 'table' and vec3(coords.x, coords.y, coords.z) or coords or GetEntityCoords(cache.ped)
     local vehicles = GetGamePool('CVehicle')
     local closeVeh = {}
-    for i = 1, #vehicles, 1 do
+    for i = 1, #vehicles do
         local vehicleCoords = GetEntityCoords(vehicles[i])
         local distance = #(vehicleCoords - coords)
         if distance <= radius then
             closeVeh[#closeVeh + 1] = vehicles[i]
         end
     end
-    if #closeVeh > 0 then return false end
-    return true
+    return #closeVeh == 0
 end
 
 function QBCore.Functions.GetVehicleProperties(vehicle)
@@ -1181,13 +1163,7 @@ end
 --     end
 -- end
 
-function QBCore.Functions.LoadParticleDictionary(dictionary)
-    if HasNamedPtfxAssetLoaded(dictionary) then return end
-    RequestNamedPtfxAsset(dictionary)
-    while not HasNamedPtfxAssetLoaded(dictionary) do
-        Wait(0)
-    end
-end
+QBCore.Functions.LoadParticleDictionary = lib.requestNamedPtfxAsset
 
 function QBCore.Functions.StartParticleAtCoord(dict, ptName, looped, coords, rot, scale, alpha, color, duration)
     if coords then

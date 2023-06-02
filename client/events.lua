@@ -5,29 +5,31 @@ RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     ShutdownLoadingScreenNui()
     LocalPlayer.state:set('isLoggedIn', true, false)
     if not QBConfig.Server.PVP then return end
-    SetCanAttackFriendly(PlayerPedId(), true, false)
+    SetCanAttackFriendly(cache.ped, true, false)
     NetworkSetFriendlyFireOption(true)
+    IsLoggedIn = true
 end)
 
 RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
     LocalPlayer.state:set('isLoggedIn', false, false)
+    IsLoggedIn = false
 end)
 
 RegisterNetEvent('QBCore:Client:PvpHasToggled', function(pvp_state)
-    SetCanAttackFriendly(PlayerPedId(), pvp_state, false)
+    SetCanAttackFriendly(cache.ped, pvp_state, false)
     NetworkSetFriendlyFireOption(pvp_state)
 end)
+
+
 -- Teleport Commands
 
 RegisterNetEvent('QBCore:Command:TeleportToPlayer', function(coords)
-    local ped = PlayerPedId()
-    SetPedCoordsKeepVehicle(ped, coords.x, coords.y, coords.z)
+    SetPedCoordsKeepVehicle(cache.ped, coords.x, coords.y, coords.z)
 end)
 
 RegisterNetEvent('QBCore:Command:TeleportToCoords', function(x, y, z, h)
-    local ped = PlayerPedId()
-    SetPedCoordsKeepVehicle(ped, x, y, z)
-    SetEntityHeading(ped, h or GetEntityHeading(ped))
+    SetPedCoordsKeepVehicle(cache.ped, x, y, z)
+    SetEntityHeading(cache.ped, h or GetEntityHeading(cache.ped))
 end)
 
 RegisterNetEvent('QBCore:Command:GoToMarker', function()
@@ -47,7 +49,7 @@ RegisterNetEvent('QBCore:Command:GoToMarker', function()
         Wait(0)
     end
 
-    local ped, coords <const> = PlayerPedId(), GetBlipInfoIdCoord(blipMarker)
+    local ped, coords <const> = cache.ped, GetBlipInfoIdCoord(blipMarker)
     local vehicle = GetVehiclePedIsIn(ped, false)
     local oldCoords <const> = GetEntityCoords(ped)
 
@@ -119,7 +121,7 @@ end)
 -- Vehicle Commands
 
 RegisterNetEvent('QBCore:Command:SpawnVehicle', function(vehName)
-    local ped = PlayerPedId()
+    local ped = cache.ped
     local hash = GetHashKey(vehName)
     local veh = GetVehiclePedIsUsing(ped)
     if not IsModelInCdimage(hash) then return end
@@ -129,7 +131,6 @@ RegisterNetEvent('QBCore:Command:SpawnVehicle', function(vehName)
     end
 
     if IsPedInAnyVehicle(ped) then
-        SetEntityAsMissionEntity(veh, true, true)
         DeleteVehicle(veh)
     end
 
@@ -142,7 +143,7 @@ RegisterNetEvent('QBCore:Command:SpawnVehicle', function(vehName)
 end)
 
 RegisterNetEvent('QBCore:Command:DeleteVehicle', function()
-    local ped = PlayerPedId()
+    local ped = cache.ped
     local veh = GetVehiclePedIsUsing(ped)
     if veh ~= 0 then
         SetEntityAsMissionEntity(veh, true, true)
@@ -262,3 +263,5 @@ RegisterNetEvent('QBCore:Client:OnSharedUpdateMultiple', function(tableName, val
     end
     TriggerEvent('QBCore:Client:UpdateObject')
 end)
+
+
