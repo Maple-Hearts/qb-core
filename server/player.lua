@@ -138,6 +138,12 @@ function QBCore.Player.CheckPlayerData(source, PlayerData)
         SerialNumber = QBCore.Player.CreateSerialNumber(),
         InstalledApps = {},
     }
+    PlayerData.metadata['crypto'] = PlayerData.metadata['crypto'] or {
+        ["shung"] = 0,
+        ["gne"] = 0,
+        ["xcoin"] = 0,
+        ["lme"] = 0
+    }
     -- Job
     if PlayerData.job and PlayerData.job.name and not QBCore.Shared.Jobs[PlayerData.job.name] then PlayerData.job = nil end
     PlayerData.job = PlayerData.job or {}
@@ -292,79 +298,98 @@ function QBCore.Player.CreatePlayer(PlayerData, Offline)
         self.Functions.UpdatePlayerData()
     end
 
-    function self.Functions.RemoveMoney(moneytype, amount, reason)
+    ---@param moneytype MoneyType
+    ---@param amount number
+    ---@param reason string
+    ---@return boolean success if money was added
+    function self.Functions.AddMoney(moneytype, amount, reason)
         reason = reason or 'unknown'
-        moneytype = moneytype:lower()
         amount = tonumber(amount)
         if amount < 0 then return end
-        if moneytype == 'cash' then
-            if self.Functions.GetItemByName('cash') then
-                if self.Functions.GetItemByName('cash').amount >= amount then
-                    self.Functions.RemoveItem('cash', amount)
-                    self.Functions.UpdatePlayerData()
-                else
+        if not self.PlayerData.money[moneytype] then return false end
+        self.PlayerData.money[moneytype] = self.PlayerData.money[moneytype] + amount
+
+        if not self.Offline then
+            self.Functions.UpdatePlayerData()
+            if amount > 100000 then
+                TriggerEvent('qb-log:server:CreateLog', 'playermoney', 'AddMoney', 'lightgreen', '**' .. GetPlayerName(self.PlayerData.source) .. ' (citizenid: ' .. self.PlayerData.citizenid .. ' | id: ' .. self.PlayerData.source .. ')** $' .. amount .. ' (' .. moneytype .. ') added, new ' .. moneytype .. ' balance: ' .. self.PlayerData.money[moneytype] .. ' reason: ' .. reason, true)
+            else
+                TriggerEvent('qb-log:server:CreateLog', 'playermoney', 'AddMoney', 'lightgreen', '**' .. GetPlayerName(self.PlayerData.source) .. ' (citizenid: ' .. self.PlayerData.citizenid .. ' | id: ' .. self.PlayerData.source .. ')** $' .. amount .. ' (' .. moneytype .. ') added, new ' .. moneytype .. ' balance: ' .. self.PlayerData.money[moneytype] .. ' reason: ' .. reason)
+            end
+            TriggerClientEvent('hud:client:OnMoneyChange', self.PlayerData.source, moneytype, amount, false)
+            TriggerClientEvent('QBCore:Client:OnMoneyChange', self.PlayerData.source, moneytype, amount, "add", reason)
+            TriggerEvent('QBCore:Server:OnMoneyChange', self.PlayerData.source, moneytype, amount, "add", reason)
+        end
+
+        return true
+    end
+
+    ---@param moneytype MoneyType
+    ---@param amount number
+    ---@param reason string
+    ---@return boolean success if money was removed
+    function self.Functions.RemoveMoney(moneytype, amount, reason)
+        reason = reason or 'unknown'
+        amount = tonumber(amount)
+        if amount < 0 then return end
+        if not self.PlayerData.money[moneytype] then return false end
+        for _, mtype in pairs(QBCore.Config.Money.DontAllowMinus) do
+            if mtype == moneytype then
+                if (self.PlayerData.money[moneytype] - amount) < 0 then
                     return false
                 end
-            else
-                return false
             end
-        else
-            if self.PlayerData.money[moneytype] then
-                for _, mtype in pairs(QBCore.Config.Money.DontAllowMinus) do
-                    if mtype == moneytype then
-                        if (self.PlayerData.money[moneytype] - amount) < 0 then return false end
-                    end
-                end
-                self.PlayerData.money[moneytype] = self.PlayerData.money[moneytype] - amount
+        end
+        self.PlayerData.money[moneytype] = self.PlayerData.money[moneytype] - amount
+
+        if not self.Offline then
+            self.Functions.UpdatePlayerData()
+            if amount > 100000 then
+                TriggerEvent('qb-log:server:CreateLog', 'playermoney', 'RemoveMoney', 'red', '**' .. GetPlayerName(self.PlayerData.source) .. ' (citizenid: ' .. self.PlayerData.citizenid .. ' | id: ' .. self.PlayerData.source .. ')** $' .. amount .. ' (' .. moneytype .. ') removed, new ' .. moneytype .. ' balance: ' .. self.PlayerData.money[moneytype] .. ' reason: ' .. reason, true)
             else
-                return false
+                TriggerEvent('qb-log:server:CreateLog', 'playermoney', 'RemoveMoney', 'red', '**' .. GetPlayerName(self.PlayerData.source) .. ' (citizenid: ' .. self.PlayerData.citizenid .. ' | id: ' .. self.PlayerData.source .. ')** $' .. amount .. ' (' .. moneytype .. ') removed, new ' .. moneytype .. ' balance: ' .. self.PlayerData.money[moneytype] .. ' reason: ' .. reason)
             end
+            TriggerClientEvent('hud:client:OnMoneyChange', self.PlayerData.source, moneytype, amount, true)
+            if moneytype == 'bank' then
+                TriggerClientEvent('qb-phone:client:RemoveBankMoney', self.PlayerData.source, amount)
+            end
+            TriggerClientEvent('QBCore:Client:OnMoneyChange', self.PlayerData.source, moneytype, amount, "remove", reason)
+            TriggerEvent('QBCore:Server:OnMoneyChange', self.PlayerData.source, moneytype, amount, "remove", reason)
         end
 
-        self.Functions.UpdatePlayerData()
-        if amount > 100000 then
-            TriggerEvent('qb-log:server:CreateLog', 'playermoney', 'RemoveMoney', 'red', '**' .. GetPlayerName(self.PlayerData.source) .. ' (citizenid: ' .. self.PlayerData.citizenid .. ' | id: ' .. self.PlayerData.source .. ')** $' .. amount .. ' (' .. moneytype .. ') removed, new ' .. moneytype .. ' balance: ' .. self.PlayerData.money[moneytype], true)
-        else
-            TriggerEvent('qb-log:server:CreateLog', 'playermoney', 'RemoveMoney', 'red', '**' .. GetPlayerName(self.PlayerData.source) .. ' (citizenid: ' .. self.PlayerData.citizenid .. ' | id: ' .. self.PlayerData.source .. ')** $' .. amount .. ' (' .. moneytype .. ') removed, new ' .. moneytype .. ' balance: ' .. self.PlayerData.money[moneytype])
-        end
-        TriggerClientEvent('hud:client:OnMoneyChange', self.PlayerData.source, moneytype, amount, true)
-        if moneytype == 'bank' then
-            TriggerClientEvent('qb-phone:client:RemoveBankMoney', self.PlayerData.source, amount)
-        end
         return true
     end
 
+    ---@param moneytype MoneyType
+    ---@param amount number
+    ---@param reason string
+    ---@return boolean success if money was set
     function self.Functions.SetMoney(moneytype, amount, reason)
         reason = reason or 'unknown'
-        moneytype = moneytype:lower()
         amount = tonumber(amount)
         if amount < 0 then return false end
-        if moneytype == 'cash' then
-		if self.Functions.GetItemByName('cash') then
-			local playerCash = self.Functions.GetItemByName('cash').amount
-			self.Functions.RemoveItem('cash', playerCash)
-			self.Functions.AddItem('cash', amount)
-		else
-			self.Functions.AddItem('cash', amount)
-		end
-	elseif self.PlayerData.money[moneytype] then
-		self.PlayerData.money[moneytype] = amount
-	end
+        if not self.PlayerData.money[moneytype] then return false end
+        local difference = amount - self.PlayerData.money[moneytype]
+        self.PlayerData.money[moneytype] = amount
 
-        self.Functions.UpdatePlayerData()
-        TriggerEvent('qb-log:server:CreateLog', 'playermoney', 'SetMoney', 'green', '**' .. GetPlayerName(self.PlayerData.source) .. ' (citizenid: ' .. self.PlayerData.citizenid .. ' | id: ' .. self.PlayerData.source .. ')** $' .. amount .. ' (' .. moneytype .. ') set, new ' .. moneytype .. ' balance: ' .. self.PlayerData.money[moneytype])
+        if not self.Offline then
+            self.Functions.UpdatePlayerData()
+            TriggerEvent('qb-log:server:CreateLog', 'playermoney', 'SetMoney', 'green', '**' .. GetPlayerName(self.PlayerData.source) .. ' (citizenid: ' .. self.PlayerData.citizenid .. ' | id: ' .. self.PlayerData.source .. ')** $' .. amount .. ' (' .. moneytype .. ') set, new ' .. moneytype .. ' balance: ' .. self.PlayerData.money[moneytype] .. ' reason: ' .. reason)
+            TriggerClientEvent('hud:client:OnMoneyChange', self.PlayerData.source, moneytype, math.abs(difference), difference < 0)
+            TriggerClientEvent('QBCore:Client:OnMoneyChange', self.PlayerData.source, moneytype, amount, "set", reason)
+            TriggerEvent('QBCore:Server:OnMoneyChange', self.PlayerData.source, moneytype, amount, "set", reason)
+        end
+
         return true
     end
 
+    ---@param moneytype MoneyType
+    ---@return number|boolean amount or false if moneytype does not exist
     function self.Functions.GetMoney(moneytype)
         if not moneytype then return false end
-        moneytype = moneytype:lower()
-        if moneytype == "cash" then
-            return self.Functions.GetItemByName('cash').amount
-        else
-            return self.PlayerData.money[moneytype]
-        end
+        return self.PlayerData.money[moneytype]
     end
+
     function self.Functions.SetCreditCard(cardNumber)
         self.PlayerData.charinfo.card = cardNumber
         self.Functions.UpdatePlayerData()
