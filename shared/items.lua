@@ -396,7 +396,8 @@ QBShared.Items = {
 	['weed_ak47_seed'] 				 = {['name'] = 'weed_ak47_seed', 			    ['label'] = 'AK47 Seed', 				['weight'] = 0, 		['type'] = 'item', 		['image'] = 'weed_seed.png', 		    ['unique'] = false, 	['useable'] = true, 	['shouldClose'] = true,	   ['combinable'] = nil,   ['description'] = 'A weed seed of AK47'},
 	['empty_weed_bag'] 				 = {['name'] = 'empty_weed_bag', 			    ['label'] = 'Empty Weed Bag', 			['weight'] = 0, 		['type'] = 'item', 		['image'] = 'weed_baggy_empty.png', 	['unique'] = false, 	['useable'] = true, 	['shouldClose'] = true,	   ['combinable'] = nil,   ['description'] = 'A small empty bag'},
 	['weed_nutrition'] 				 = {['name'] = 'weed_nutrition', 			    ['label'] = 'Plant Fertilizer', 		['weight'] = 2000, 		['type'] = 'item', 		['image'] = 'weed_nutrition.png', 		['unique'] = false, 	['useable'] = true, 	['shouldClose'] = true,	   ['combinable'] = nil,   ['description'] = 'Plant nutrition'},
-
+	
+	
 	-- Drugs
 	----- md-coke
 	["coke"] 		 	 	 	     = {["name"] = "coke",           				["label"] = "Raw Cocaine", 						["weight"] = 1000,		["type"] = "item", 		["image"] = "coke.png", 					["unique"] = false, 	["useable"] = false, 	["shouldClose"] = false,   ["combinable"] = nil,    ["description"] = "Processed cocaine"},
@@ -627,6 +628,9 @@ QBShared.Items = {
 	['harness'] 				 	 = {['name'] = 'harness', 			  	  		['label'] = 'Race Harness', 			['weight'] = 1000, 		['type'] = 'item', 		['image'] = 'harness.png', 				['unique'] = true, 		['useable'] = true, 	['shouldClose'] = true,	   ['combinable'] = nil,   ['description'] = 'Racing Harness so no matter what you stay in the car'},
     ['jerry_can'] 			 		 = {['name'] = 'jerry_can', 					['label'] = 'Jerrycan 20L', 			['weight'] = 20000, 	['type'] = 'item', 		['image'] = 'jerry_can.png', 			['unique'] = false, 	['useable'] = true, 	['shouldClose'] = true,    ['combinable'] = nil,   ['description'] = 'A can full of Fuel'},
 	['vehiclekey'] 				 	 = {['name'] = 'vehiclekey',					['label'] = 'Vehicle key', 				['weight'] = 0, 		['type'] = 'item', 		['image'] = 'vehiclekeys.png', 				['unique'] = true, 	['useable'] = true, 	['shouldClose'] = true,	   ['combinable'] = nil,   ['description'] = "This is a car key, take good care of it, if you lose it you probably won't be able to use your car"},
+	-- CW mechtool
+	["obd_scanner"] =          {["name"] = "obd_scanner",         ["label"] = "OBD Scanner",                  ["weight"] = 300, ["type"] = "item", ["image"] = "obd_scanner.png", ["unique"] = false, ["useable"] = true, ['shouldClose'] = false, ["combinable"] = nil, ["description"] = "A tool used by mechanics to diagnose vehicles"},
+
 
 	-- Medication
 	['firstaid'] 			 		 = {['name'] = 'firstaid', 						['label'] = 'First Aid', 				['weight'] = 2500, 		['type'] = 'item', 		['image'] = 'firstaid.png', 			['unique'] = false, 	['useable'] = true, 	['shouldClose'] = true,	   ['combinable'] = nil, 		["created"] = nil, 		["decay"] = 16.0, ['description'] = 'You can use this First Aid kit to get people back on their feet'},
@@ -673,7 +677,7 @@ QBShared.Items = {
 	["metal_wand"] 					 = {["name"] = "metal_wand",  	     		    ["label"] = "Metal Wand",	 		    ["weight"] = 1, 		["type"] = "item", 		["image"] = "metal_wand.png", 			["unique"] = false, 	["useable"] = true, 	["shouldClose"] = true,   	["combinable"] = nil,   ["description"] = "It Detects Metal?!?"},
 	["bodycam"] 		 			 = {["name"] = "bodycam",       	    		["label"] = "PD Body Camera",	 		["weight"] = 20, 		["type"] = "item", 		["image"] = "bodycam.png", 				["unique"] = false, 	["useable"] = true, 	["shouldClose"] = true,   ["combinable"] = nil,   ["description"] = "Body Camera"},
     ["alcotester"] 				     = {["name"] = "alcotester", 			 	  	["label"] = "Alcohol Tester", 			["weight"] = 200, 		["type"] = "item", 		["image"] = "alcotester.png", 			["unique"] = false, 	["useable"] = true, 	["shouldClose"] = true,    ["combinable"] = nil,   ["description"] = "Needs"},
-
+	['mdtcitation'] 				 = {['name'] = 'mdtcitation', 			  	  	['label'] = 'Citation', 			['weight'] = 1000, 		['type'] = 'item', 		['image'] = 'citation.png', 			['unique'] = true, 		['useable'] = false, ['shouldClose'] = true,	   ['combinable'] = nil,   ['description'] = 'Citation from a police officer!'},
 
 	-- Firework Tools
 	['firework1'] 				 	 = {['name'] = 'firework1', 			  	  	['label'] = '2Brothers', 				['weight'] = 1000, 		['type'] = 'item', 		['image'] = 'firework1.png', 			['unique'] = false, 	['useable'] = true, 	['shouldClose'] = true,	   ['combinable'] = nil,   ['description'] = 'Fireworks'},
@@ -717,6 +721,8 @@ QBShared.Items = {
 	["casino_psqs"] 				 = { ["name"] = "casino_psqs",					["label"] = "Casino Ps & Qs",			["weight"] = 0,			["type"] = "item",		["image"] = "casino_psqs.png",			["unique"] = true,		["useable"] = false,	["shouldClose"] = false,	["combinable"] = nil,	["description"] = "Casino Ps & Qs" },	
 	["casino_sandwitch"] 			 = { ["name"] = "casino_sandwitch",				["label"] = "Casino Sandwitch",			["weight"] = 0,			["type"] = "item",		["image"] = "casino_sandwitch.png",		["unique"] = true,		["useable"] = false,	["shouldClose"] = false,	["combinable"] = nil,	["description"] = "Casino Sandwitch" },	
 	["casino_sprite"] 				 = { ["name"] = "casino_sprite",				["label"] = "Casino Sprite",			["weight"] = 0,			["type"] = "item",		["image"] = "casino_sprite.png",		["unique"] = true,		["useable"] = false,	["shouldClose"] = false,	["combinable"] = nil,	["description"] = "Casino Sprite" },
+	['camera'] 						 = {['name'] = 'camera', 			  	  		['label'] = 'Camera', 					['weight'] = 1000, 		['type'] = 'item', 		['image'] = 'camera.png', 				['unique'] = true, 	['useable'] = true, 	['shouldClose'] = true,   ['combinable'] = nil,   ['description'] = 'Camera to take pretty pictures.'},
+	['photo'] 				 		 = {['name'] = 'photo', 			  	  		['label'] = 'Saved Pic', 				['weight'] = 500, 		['type'] = 'item', 		['image'] = 'photo.png', 				['unique'] = true, 	['useable'] = true, 	['shouldClose'] = true,   ['combinable'] = nil,   ['description'] = 'Brand new picture saved!'},
 	
 	-- mt-clothingbag
 	["clothing_bag"]  				 = {["name"] = "clothing_bag", 					["label"] = "Clothing Bag",				["weight"] = 100, 		["type"] = "item", 			["image"] = "clothing_bag.png", 				["unique"] = false, 	["useable"] = true, 	["shouldClose"] = true,    ["combinable"] = nil,   ["description"] = ""},
