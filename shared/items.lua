@@ -315,7 +315,8 @@ QBShared.Items = {
 	["bean_machine_coffe"] 			 = {["name"] = "bean_machine_coffe", 			["label"] = "Bean Machine Coffe", 		["weight"] = 200, 		["type"] = "item", 		["image"] = "bean_machine_coffe.png", 	["unique"] = false, 	["useable"] = true, 	["shouldClose"] = true,    ["combinable"] = nil, 		["created"] = nil, 		["decay"] = 7.0, 	["description"] = "Needs"},
 	["sprunk"] 				    	 = {["name"] = "sprunk", 			 	  	  	["label"] = "Sprunk", 					["weight"] = 200, 		["type"] = "item", 		["image"] = "sprunk.png", 				["unique"] = false, 	["useable"] = true, 	["shouldClose"] = true,    ["combinable"] = nil, 		["created"] = nil, 		["decay"] = 7.0, 	["description"] = "Needs"},
 	["cola"] 				     	 = {["name"] = "cola", 			 	  	  		["label"] = "Cola", 					["weight"] = 200, 		["type"] = "item", 		["image"] = "cola.png", 				["unique"] = false, 	["useable"] = true, 	["shouldClose"] = true,    ["combinable"] = nil, 		["created"] = nil, 		["decay"] = 7.0, 	["description"] = "Needs"},
- 
+	["syphoningkit"]				 = {["name"] = "syphoningkit", 					["label"] = "Syphoning Kit", 			["weight"] = 5000, 		["type"] = "item", 		["image"] = "syphoningkit.png", 		["unique"] = true, 		["useable"] = true, 	["shouldClose"] = false,   ["combinable"] = nil,   ["description"] = "A kit made to siphon gasoline from vehicles."},
+	["jerrycan"]				 	 = {["name"] = "jerrycan", 						["label"] = "Jerry Can", 				["weight"] = 15000, 	["type"] = "item", 		["image"] = "jerrycan.png", 			["unique"] = true, 		["useable"] = true, 	["shouldClose"] = false,   ["combinable"] = nil,   ["description"] = "A Jerry Can made to hold gasoline."},
 
 	-- Alcohol
 	['beer'] 				 		 = {['name'] = 'beer', 			  	  			['label'] = 'Beer', 							['weight'] = 500, 		['type'] = 'item', 		['image'] = 'beer.png', 					['unique'] = false, 	['useable'] = true, 	['shouldClose'] = true,	   ['combinable'] = nil, 		["created"] = nil, 		["decay"] = 120.0, 	['description'] = 'Nothing like a good cold beer!'},
