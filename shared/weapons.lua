@@ -148,4 +148,11 @@ QBShared.Weapons = {
 	-- Animals
     [`weapon_animal`]               = {['name'] = 'weapon_animal',	['label'] = 'Animal',	['weapontype'] = 'Animals',	['ammotype'] = nil,	['damagereason'] = 'Mauled'},
     [`weapon_cougar`]               = {['name'] = 'weapon_cougar',	['label'] = 'Cougar',	['weapontype'] = 'Animals',	['ammotype'] = nil,	['damagereason'] = 'Mauled'},
+
+	[`weapon_prolaser4`] = { 
+		['name'] = 'weapon_prolaser4',
+		['label'] = 'Lidar Gun',
+		['ammotype'] = 'nil',
+		['damagereason'] = 'Ticketed / Fined / Caught Speeding / Slow Down'
+	},
 }
