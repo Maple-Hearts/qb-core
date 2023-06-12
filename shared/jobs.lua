@@ -15,38 +15,105 @@ QBShared.Jobs = {
             },
         },
 	},
+
 	['police'] = {
-		label = 'Law Enforcement',
+		label = 'MHSO',
         type = "leo",
 		defaultDuty = true,
 		offDutyPay = false,
 		grades = {
+            ['0'] = {name = "Cadet", payment = 400},
+            ['1'] = {name = "Probationary Officer", payment = 600},
+            ['2'] = {name = "Deputy I", payment = 700},
+            ['3'] = {name = "Deputy II", payment = 800},
+            ['4'] = {name = "Deputy III", payment = 850},
+            ['5'] = {name = "Senior Deputy", payment = 900},
+            ['6'] = {name = "Detective", payment = 900},
+            ['7'] = {name = "Corporal", payment = 1000},
+            ['8'] = {name = "Sergeant", payment = 1250},
+            ['9'] = {name = "Staff Sergeant", payment = 1500},
+            ['10'] = {name = "Master Sergeant", payment = 1750},
+            ['11'] = {name = "Lieutenant", isboss = true, payment = 2250, bankAuth = true},
+            ['12'] = {name = "Captain", isboss = true, payment = 2750, bankAuth = true},
+            ['13'] = {name = "Chief Deputy", isboss = true, payment = 3250, bankAuth = true},
+            ['14'] = {name = "Undersheriff", isboss = true, payment = 3750, bankAuth = true},
+            ['15'] = {name = "Sheriff", isboss = true, payment = 4250, bankAuth = true},
+        },
+	},
+
+    ['doctor'] = {
+        label = 'SADO',
+        type = 'samr',
+        defaultDuty = true,
+        offDutyPay = false,
+        grades = {
+            ['0'] = {name = 'Ast. Nurse', payment = 350},
+            ['1'] = {name = 'Nurse', payment = 700},
+            ['2'] = {name = 'Doctor', payment = 850},
+            ['3'] = {name = 'Senior Doctor', payment = 900},
+            ['4'] = {name = 'Medical Supervisor', payment = 1250, isboss = true, bankAuth = false},
+            ['5'] = {name = 'Department Manager', payment = 1500, isboss = true, bankAuth = false},
+            ['6'] = {name = 'Department Head', payment = 1750, isboss = true, bankAuth = false},
+            ['7'] = {name = 'Ast. Medical Director', payment = 2250, isboss = true, bankAuth = true},
+            ['8'] = {name = 'Medical Director', payment = 3750, isboss = true, bankAuth = true},
+            ['9'] = {name = 'Commissioner', payment = 4250, isboss = true, bankAuth = true},
+        },
+    },
+
+    ['ems'] = {
+        label = 'SAMR',
+        type = 'samr',
+        defaultDuty = true,
+        offDutyPay = false,
+        grades = {
+            ['0'] = {name = 'EMSVO', payment = 350}, -- EMS Vehicle Operator
+            ['1'] = {name = 'EMR', payment = 550}, -- Emergency Medical Responder
+            ['2'] = {name = 'EMT', payment = 700}, -- Emergency Medical Technician
+            ['3'] = {name = 'AEMT', payment = 900}, -- Advanced Emergency Medical Technician
+            ['4'] = {name = 'Paramedic', payment = 900}, -- Paramedic
+            ['5'] = {name = 'Lieutenant', payment = 1500, isboss = true, bankAuth = true},
+            ['6'] = {name = 'Captain', payment = 1750, isboss = true, bankAuth = true},
+            ['7'] = {name = 'Deputy Chief', payment = 2250, isboss = true, bankAuth = true},
+            ['8'] = {name = 'Chief', payment = 3750, isboss = true, bankAuth = true},
+            ['9'] = {name = 'Commissioner', payment = 4250, isboss = true, bankAuth = true},
+        },
+    },
+
+    ['fire'] = {
+        label = 'SAFR',
+        type = 'samr',
+        defaultDuty = true,
+        offDutyPay = false,
+        grades = {
+            ['0'] = {name = 'Probationary Firefighter', payment = 350},
+            ['1'] = {name = 'Firefighter', payment = 550},
+            ['2'] = {name = 'Fire Technician', payment = 700},
+            ['3'] = {name = 'Lieutenant In Training', payment = 700},
+            ['4'] = {name = 'Fire Lieutenant', payment = 1000},
+            ['5'] = {name = 'Captain', payment = 1500, isboss = true, bankAuth = true},
+            ['6'] = {name = 'Battalion Chief', payment = 1750, isboss = true, bankAuth = true},
+            ['7'] = {name = 'Assistant Chief', payment = 2250, isboss = true, bankAuth = true},
+            ['8'] = {name = 'Fire Chief', payment = 3750, isboss = true, bankAuth = true},
+            ['9'] = {name = 'Commissioner', payment = 4250, isboss = true, bankAuth = true},
+        },
+    },
+
+    ['judge'] = {
+		label = 'Honorary',
+        type = 'doj',
+		defaultDuty = true,
+		offDutyPay = false,
+		grades = {
             ['0'] = {
-                name = 'Recruit',
-                payment = 50
-            },
-			['1'] = {
-                name = 'Officer',
-                payment = 75
-            },
-			['2'] = {
-                name = 'Sergeant',
+                name = 'Judge',
                 payment = 100
-            },
-			['3'] = {
-                name = 'Lieutenant',
-                payment = 125
-            },
-			['4'] = {
-                name = 'Chief',
-				isboss = true,
-                payment = 150
             },
         },
 	},
-	['ambulance'] = {
-		label = 'EMS',
-        type = 'ems',
+
+	['lawyer'] = {
+		label = 'Law Firm',
+        type = 'doj',
 		defaultDuty = true,
 		offDutyPay = false,
 		grades = {
@@ -54,25 +121,21 @@ QBShared.Jobs = {
                 name = 'Recruit',
                 payment = 50
             },
-			['1'] = {
-                name = 'Paramedic',
-                payment = 75
-            },
-			['2'] = {
-                name = 'Doctor',
-                payment = 100
-            },
-			['3'] = {
-                name = 'Surgeon',
-                payment = 125
-            },
-			['4'] = {
-                name = 'Chief',
-				isboss = true,
+            ['1'] = {
+                name = 'Public Defender',
                 payment = 150
+            },
+            ['2'] = {
+                name = 'Associate',
+                payment = 250
+            },
+            ['3'] = {
+                name = 'Full',
+                payment = 350
             },
         },
 	},
+
 	['realestate'] = {
 		label = 'Real Estate',
 		defaultDuty = true,
@@ -194,28 +257,6 @@ QBShared.Jobs = {
                 name = 'Manager',
 				isboss = true,
                 payment = 150
-            },
-        },
-	},
-	['judge'] = {
-		label = 'Honorary',
-		defaultDuty = true,
-		offDutyPay = false,
-		grades = {
-            ['0'] = {
-                name = 'Judge',
-                payment = 100
-            },
-        },
-	},
-	['lawyer'] = {
-		label = 'Law Firm',
-		defaultDuty = true,
-		offDutyPay = false,
-		grades = {
-            ['0'] = {
-                name = 'Associate',
-                payment = 50
             },
         },
 	},
