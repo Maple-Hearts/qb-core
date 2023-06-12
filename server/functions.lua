@@ -232,29 +232,6 @@ function PaycheckInterval()
     SetTimeout(QBCore.Config.Money.PayCheckTimeOut * (60 * 1000), PaycheckInterval)
 end
 
--- Convert Cash To Itemized Cash 
-
-Citizen.CreateThread(function()
-	Wait(10000)
-    exports['oxmysql']:execute('SELECT * FROM players', {}, function(result)
-		for k, v in pairs(result) do
-			local Player = QBCore.Functions.GetOfflinePlayerByCitizenId(v.citizenid)
-			if Player.PlayerData.money.cash > 0 then
-				table.insert(Player.PlayerData.items, {
-					info = "",
-					name = "cash",
-					slot = (#Player.PlayerData.inventory + 1),
-					type = "item",
-					amount = math.floor(Player.PlayerData.money.cash + 0.5)
-				})
-				Player.PlayerData.money.cash = 0
-				QBCore.Player.SaveOffline(Player.PlayerData)
-			end
-			Wait(100)
-		end
-	end)
-end)
-
 -- Callback Functions -- 
 
 -- Client Callback
@@ -284,8 +261,8 @@ function QBCore.Functions.CanUseItem(item)
 end
 
 function QBCore.Functions.UseItem(source, item)
-    if GetResourceState('lj-inventory') == 'missing' then return end
-    exports['lj-inventory']:UseItem(source, item)
+    if GetResourceState('qb-inventory') == 'missing' then return end
+    exports['qb-inventory']:UseItem(source, item)
 end
 
 -- Kick Player
@@ -430,8 +407,8 @@ end
 -- Utility functions
 
 function QBCore.Functions.HasItem(source, items, amount)
-    if GetResourceState('lj-inventory') == 'missing' then return end
-    return exports['lj-inventory']:HasItem(source, items, amount)
+    if GetResourceState('qb-inventory') == 'missing' then return end
+    return exports['qb-inventory']:HasItem(source, items, amount)
 end
 
 function QBCore.Functions.Notify(source, text, type, length)
