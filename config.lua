@@ -66,3 +66,26 @@ QBConfig.Notify.VariantDefinitions = {
         icon = 'fas fa-ambulance'
     }
 }
+
+QBConfig.AdaptiveCard = {
+    Enabled = true,
+    Server_Name = 'Maple Leaf',
+    Wait = 12, -- How many seconds should splash page be shown for? (Max is 12)
+    Banner = 'https://i.imgur.com/KTtiRuC.gif',
+    Heading = 'Maple Leaf RP!',
+    ---------------- Left Button
+    Button_1 = 'Website',
+    Icon_1 = '',
+    Link_1 = 'https://maplehearts.net/index.php',
+    ---------------- Right Button
+    Button_2 = 'Discord',
+    Icon_2 = '',
+    Link_2 = 'https://discord.gg/maplehearts',
+    ---------------- Middle Button
+    Button_3 = 'Tebex',
+    Icon_3 = '',
+    Link_3 = 'https://maplehearts.tebex.io/',
+    ---------------- Bottom Banner
+    Icon_4 = '',
+    Link_4 = '',
+}

@@ -72,6 +72,20 @@ local function onPlayerConnecting(name, _, deferrals)
                 end
             end)
         end
+        if QBConfig.AdaptiveCard.Enabled then
+            local toEnd = false
+            local count = 0
+            while not toEnd do 
+                deferrals.presentCard('{"type": "AdaptiveCard","$schema": "http://adaptivecards.io/schemas/adaptive-card.json","version": "1.3","body": [{"type": "Image","url": "' ..QBConfig.AdaptiveCard.Banner.. '","horizontalAlignment": "center"},{"type": "Container","items": [{"type": "TextBlock","text": "👋 Welcome '.. name ..' to '.. QBConfig.AdaptiveCard.Server_Name ..'! 👋","wrap": true,"fontType": "Default","size": "extralarge","weight": "bolder","color": "Light","horizontalAlignment": "center"},{"type": "TextBlock","text": "' ..QBConfig.AdaptiveCard.Heading.. '","wrap": true,"size": "Large","weight": "bolder","color": "Light","horizontalAlignment": "center"},{"type": "ColumnSet","height": "stretch","minHeight": "50px","bleed": true,"horizontalAlignment": "center","columns": [ { "type": "Column", "width": "stretch", "items": [ { "type": "ActionSet", "actions": [ { "type": "Action.OpenUrl", "title": "' .. QBConfig.AdaptiveCard.Button_1 .. '", "iconUrl": "' .. QBConfig.AdaptiveCard.Icon_1 .. '", "url": "' .. QBConfig.AdaptiveCard.Link_1 .. '", "style": "positive" } ], "horizontalAlignment": "center" } ], "height": "stretch" }, { "type": "Column", "width": "stretch", "items": [ { "type": "ActionSet", "actions": [ { "type": "Action.OpenUrl", "title": "' .. QBConfig.AdaptiveCard.Button_2 .. '", "style": "positive", "iconUrl": "' .. QBConfig.AdaptiveCard.Icon_2 .. '", "url": "' .. QBConfig.AdaptiveCard.Link_2 .. '" } ], "horizontalAlignment": "center" } ] } ] }, { "type": "ActionSet", "actions": [ { "type": "Action.OpenUrl", "title": "' .. QBConfig.AdaptiveCard.Button_3 .. '", "style": "destructive", "iconUrl": "' .. QBConfig.AdaptiveCard.Icon_3 .. '", "url": "' .. QBConfig.AdaptiveCard.Link_3 .. '" } ], "horizontalAlignment": "center" } ], "style": "default", "bleed": true, "height": "stretch" }, { "type": "Image", "url": "' .. QBConfig.AdaptiveCard.Icon_4 .. '", "selectAction": { "type": "Action.OpenUrl", "url": "' .. QBConfig.AdaptiveCard.Link_4 .. '" }, "horizontalAlignment": "center" } ] }',
+                function(data, rawData)
+                end)
+                Wait((1000))
+                count = count + 1;
+                if count == QBConfig.AdaptiveCard.Wait then 
+                    toEnd = true;
+                end
+            end
+        end
 
         if not databaseSuccess then
             databasePromise:reject(databaseError)
@@ -98,6 +112,7 @@ local function onPlayerConnecting(name, _, deferrals)
         Wait(1000)
     end
 
+    
     -- Add any additional defferals you may need!
 end
 
